@@ -1,2 +1,4 @@
 # The no-littering cache directory
 .cache
+eln-cache
+var

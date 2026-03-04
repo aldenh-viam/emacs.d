@@ -602,25 +602,25 @@ buffer. When `switch-to-buffer-obey-display-actions' is non-nil,
 ;;
 ;; Programming modes, tree-sitter, LSP
 ;;
-; (use-package treesit-auto
-;   :pin melpa
-;   :custom
-;   (treesit-auto-install 'prompt)
-;   :config
-;   ;; https://www.reddit.com/r/emacs/comments/1ewrjrm/help_get_proper_syntax_highlight_on_ctsmode/
-;   (add-to-list 'treesit-auto-recipe-list
-;                (make-treesit-auto-recipe
-;                 :lang 'rust
-;                 :ts-mode 'rust-ts-mode
-;                 :remap 'rust-mode
-;                 :url "https://github.com/tree-sitter/tree-sitter-rust"
-;                 :revision "v0.23.3"
-;                 :ext "\\.rs\\'"))
-;   ;; https://github.com/renzmann/treesit-auto/issues/76
-;   (setq major-mode-remap-alist
-;         (treesit-auto--build-major-mode-remap-alist))
-;   (treesit-auto-add-to-auto-mode-alist 'all)
-;   (global-treesit-auto-mode))
+(use-package treesit-auto
+  :pin melpa
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  ;; https://www.reddit.com/r/emacs/comments/1ewrjrm/help_get_proper_syntax_highlight_on_ctsmode/
+  (add-to-list 'treesit-auto-recipe-list
+               (make-treesit-auto-recipe
+                :lang 'rust
+                :ts-mode 'rust-ts-mode
+                :remap 'rust-mode
+                :url "https://github.com/tree-sitter/tree-sitter-rust"
+                :revision "v0.23.3"
+                :ext "\\.rs\\'"))
+  ;; https://github.com/renzmann/treesit-auto/issues/76
+  (setq major-mode-remap-alist
+        (treesit-auto--build-major-mode-remap-alist))
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
 
 (use-package cmake-mode
   :ensure t
@@ -723,159 +723,153 @@ buffer. When `switch-to-buffer-obey-display-actions' is non-nil,
 ;   :config
 ;   (auth-source-1password-enable))
 
-; (use-package gptel
-;   :pin melpa
-;   :config
-;   (setq gptel-model 'claude-sonnet-4-5-20250929)
-;   (defun my/get-anthropic-api-key ()
-;     "Retrieve Anthropic API key from auth-source (1Password)."
-;     (let ((key (auth-source-pick-first-password
-;                 :host "anthropic.com"
-;                 :user "password")))
-;       (if key
-;           key
-;         (user-error "Anthropic API key not found in auth-source"))))
+(use-package gptel
+  :pin melpa
+  :config
+  (setq gptel-model 'claude-sonnet-4-5-20250929)
+  (defun my/get-anthropic-api-key ()
+    (getenv "ANTHROPIC_API_KEY"))
 
-;   (setq gptel-backend (gptel-make-anthropic "Claude"
-;                          :stream t
-;                          :key (my/get-anthropic-api-key))))
+  (setq gptel-backend (gptel-make-anthropic "Claude"
+                         :stream t
+                         :key (my/get-anthropic-api-key))))
 
 
-; ;; Prereq for claude-code-ide
-; (use-package eat
-;   :vc (:url "https://codeberg.org/akib/emacs-eat" :rev :newest)
-;   :demand
-;   :bind (:map eat-semi-char-mode-map
-;               ;; Unbind M-` so it falls through to global binding (ns-next-frame)
-;               ("M-`" . nil)))
+;; Prereq for claude-code-ide
+(use-package eat
+  :vc (:url "https://codeberg.org/akib/emacs-eat" :rev :newest)
+  :demand
+  :bind (:map eat-semi-char-mode-map
+              ;; Unbind M-` so it falls through to global binding (ns-next-frame)
+              ("M-`" . nil)))
 
-; ;; vterm - alternative terminal backend for claude-code-ide
-; (use-package vterm
-;   :ensure t
-;   :pin melpa
-;   :bind (:map vterm-mode-map
-;               ;; Unbind M-` so it falls through to global binding (ns-next-frame)
-;               ("M-`" . nil)))
+;; vterm - alternative terminal backend for claude-code-ide
+(use-package vterm
+  :ensure t
+  :pin melpa
+  :bind (:map vterm-mode-map
+              ;; Unbind M-` so it falls through to global binding (ns-next-frame)
+              ("M-`" . nil)))
 
-; (use-package claude-code-ide
-;   :vc (:url "https://github.com/manzaltu/claude-code-ide.el" :rev :newest)
-;   ;; :ensure-system-package claude-code
-;   :bind ("s-c" . claude-code-ide-menu)
-;   :custom
+(use-package claude-code-ide
+  :vc (:url "https://github.com/manzaltu/claude-code-ide.el" :rev :newest)
+  ;; :ensure-system-package claude-code
+  :bind ("s-c" . claude-code-ide-menu)
+  :custom
 
-;   ;; Terminal backend
-;   ;; (claude-code-ide-terminal-backend 'eat)  ; Commented out - trying vterm instead
-;   (claude-code-ide-terminal-backend 'vterm)
+  ;; Terminal backend
+  ;; (claude-code-ide-terminal-backend 'eat)  ; Commented out - trying vterm instead
+  (claude-code-ide-terminal-backend 'vterm)
 
-;   ;; Window configuration
-;   (claude-code-ide-use-side-window nil)
-;   (claude-code-ide-focus-on-open t)
+  ;; Window configuration
+  (claude-code-ide-use-side-window nil)
+  (claude-code-ide-focus-on-open t)
 
-;   ;; Diff integration with ediff
-;   (claude-code-ide-use-ide-diff t)
-;   (claude-code-ide-focus-claude-after-ediff t)
+  ;; Diff integration with ediff
+  (claude-code-ide-use-ide-diff t)
+  (claude-code-ide-focus-claude-after-ediff t)
 
-;   (claude-code-ide-diagnostics-backend 'flycheck)
-;   (claude-code-ide-debug-mode nil)
-;   (claude-code-ide-chat-auto-scroll t)
+  (claude-code-ide-diagnostics-backend 'flycheck)
+  (claude-code-ide-debug-mode nil)
+  (claude-code-ide-chat-auto-scroll t)
 
-;   :config
-;   (setenv "ANTHROPIC_API_KEY" (my/get-anthropic-api-key))
+  :config
+  (setenv "ANTHROPIC_API_KEY" (my/get-anthropic-api-key))
 
-;   ;; Enable Emacs MCP tools for deep integration
-;   (claude-code-ide-emacs-tools-setup)
-; )
+  ;; Enable Emacs MCP tools for deep integration
+  (claude-code-ide-emacs-tools-setup)
+)
 
 
-; ;; Helper function to load MCP tool guidance from markdown files
-; (defun my/load-mcp-guidance (filename)
-;   "Load MCP tool guidance from ~/.emacs.d/claude-mcp-guidance/FILENAME."
-;   (let ((path (expand-file-name
-;                (concat "claude-mcp-guidance/" filename)
-;                user-emacs-directory)))
-;     (if (file-exists-p path)
-;         (with-temp-buffer
-;           (insert-file-contents path)
-;           (string-trim (buffer-string)))
-;       (format "TODO: Create guidance file at %s" path))))
+;; Helper function to load MCP tool guidance from markdown files
+(defun my/load-mcp-guidance (filename)
+  "Load MCP tool guidance from ~/.emacs.d/claude-mcp-guidance/FILENAME."
+  (let ((path (expand-file-name
+               (concat "claude-mcp-guidance/" filename)
+               user-emacs-directory)))
+    (if (file-exists-p path)
+        (with-temp-buffer
+          (insert-file-contents path)
+          (string-trim (buffer-string)))
+      (format "TODO: Create guidance file at %s" path))))
 
-; ;; Claude Code IDE Extras - Additional MCP tools
-; (use-package claude-code-ide-extras
-;   :vc (:url "https://github.com/acmorrow/claude-code-ide-extras"
-;        :rev "0.0.4")
-;   :after (projectile lsp-mode claude-code-ide)
-;   :demand t
-;   :custom
-;   ;; Projectile tool customizations
-;   (claude-code-ide-extras-projectile-task-start-usage-prompt
-;    (my/load-mcp-guidance "projectile/task_start.md"))
-;   (claude-code-ide-extras-projectile-task-wait-usage-prompt
-;    (my/load-mcp-guidance "projectile/task_wait.md"))
-;   (claude-code-ide-extras-projectile-task-query-usage-prompt
-;    (my/load-mcp-guidance "projectile/task_query.md"))
-;   (claude-code-ide-extras-projectile-task-search-usage-prompt
-;    (my/load-mcp-guidance "projectile/task_search.md"))
-;   (claude-code-ide-extras-projectile-task-kill-usage-prompt
-;    (my/load-mcp-guidance "projectile/task_kill.md"))
-;   (claude-code-ide-extras-projectile-read-project-dir-locals-usage-prompt
-;    (my/load-mcp-guidance "projectile/read_project_dir_locals.md"))
-;   (claude-code-ide-extras-projectile-get-project-files-usage-prompt
-;    (my/load-mcp-guidance "projectile/get_project_files.md"))
-;   (claude-code-ide-extras-projectile-get-project-buffer-local-keys-usage-prompt
-;    (my/load-mcp-guidance "projectile/get_project_buffer_local_keys.md"))
-;   (claude-code-ide-extras-projectile-get-project-buffer-local-variables-usage-prompt
-;    (my/load-mcp-guidance "projectile/get_project_buffer_local_variables.md"))
+;; Claude Code IDE Extras - Additional MCP tools
+(use-package claude-code-ide-extras
+  :vc (:url "https://github.com/acmorrow/claude-code-ide-extras"
+       :rev "0.0.4")
+  :after (projectile lsp-mode claude-code-ide)
+  :demand t
+  :custom
+  ;; Projectile tool customizations
+  (claude-code-ide-extras-projectile-task-start-usage-prompt
+   (my/load-mcp-guidance "projectile/task_start.md"))
+  (claude-code-ide-extras-projectile-task-wait-usage-prompt
+   (my/load-mcp-guidance "projectile/task_wait.md"))
+  (claude-code-ide-extras-projectile-task-query-usage-prompt
+   (my/load-mcp-guidance "projectile/task_query.md"))
+  (claude-code-ide-extras-projectile-task-search-usage-prompt
+   (my/load-mcp-guidance "projectile/task_search.md"))
+  (claude-code-ide-extras-projectile-task-kill-usage-prompt
+   (my/load-mcp-guidance "projectile/task_kill.md"))
+  (claude-code-ide-extras-projectile-read-project-dir-locals-usage-prompt
+   (my/load-mcp-guidance "projectile/read_project_dir_locals.md"))
+  (claude-code-ide-extras-projectile-get-project-files-usage-prompt
+   (my/load-mcp-guidance "projectile/get_project_files.md"))
+  (claude-code-ide-extras-projectile-get-project-buffer-local-keys-usage-prompt
+   (my/load-mcp-guidance "projectile/get_project_buffer_local_keys.md"))
+  (claude-code-ide-extras-projectile-get-project-buffer-local-variables-usage-prompt
+   (my/load-mcp-guidance "projectile/get_project_buffer_local_variables.md"))
 
-;   ;; LSP tool customizations
-;   (claude-code-ide-extras-lsp-format-buffer-usage-prompt
-;    (my/load-mcp-guidance "lsp/format_buffer.md"))
-;   (claude-code-ide-extras-lsp-describe-thing-at-point-usage-prompt
-;    (my/load-mcp-guidance "lsp/describe_thing_at_point.md"))
+  ;; LSP tool customizations
+  (claude-code-ide-extras-lsp-format-buffer-usage-prompt
+   (my/load-mcp-guidance "lsp/format_buffer.md"))
+  (claude-code-ide-extras-lsp-describe-thing-at-point-usage-prompt
+   (my/load-mcp-guidance "lsp/describe_thing_at_point.md"))
 
-;   ;; Emacs tool customizations
-;   (claude-code-ide-extras-emacs-describe-usage-prompt
-;    (my/load-mcp-guidance "emacs/describe.md"))
-;   (claude-code-ide-extras-emacs-apropos-usage-prompt
-;    (my/load-mcp-guidance "emacs/apropos.md"))
-;   (claude-code-ide-extras-emacs-apropos-command-usage-prompt
-;    (my/load-mcp-guidance "emacs/apropos_command.md"))
-;   (claude-code-ide-extras-emacs-apropos-documentation-usage-prompt
-;    (my/load-mcp-guidance "emacs/apropos_documentation.md"))
-;   (claude-code-ide-extras-emacs-buffer-query-usage-prompt
-;    (my/load-mcp-guidance "emacs/buffer_query.md"))
-;   (claude-code-ide-extras-emacs-buffer-search-usage-prompt
-;    (my/load-mcp-guidance "emacs/buffer_search.md"))
-;   (claude-code-ide-extras-emacs-read-dir-locals-usage-prompt
-;    (my/load-mcp-guidance "emacs/read_dir_locals.md"))
-;   (claude-code-ide-extras-emacs-get-buffer-local-keys-usage-prompt
-;    (my/load-mcp-guidance "emacs/get_buffer_local_keys.md"))
-;   (claude-code-ide-extras-emacs-get-buffer-local-variables-usage-prompt
-;    (my/load-mcp-guidance "emacs/get_buffer_local_variables.md"))
-;   (claude-code-ide-extras-emacs-eval-elisp-usage-prompt
-;    (my/load-mcp-guidance "emacs/eval_elisp.md"))
-;   (claude-code-ide-extras-emacs-eval-region-usage-prompt
-;    (my/load-mcp-guidance "emacs/eval_region.md"))
-;   (claude-code-ide-extras-emacs-eval-defun-at-point-usage-prompt
-;    (my/load-mcp-guidance "emacs/eval_defun_at_point.md"))
-;   (claude-code-ide-extras-emacs-find-file-usage-prompt
-;    (my/load-mcp-guidance "emacs/find_file.md"))
-;   (claude-code-ide-extras-emacs-position-point-usage-prompt
-;    (my/load-mcp-guidance "emacs/position_point.md"))
-;   (claude-code-ide-extras-emacs-select-region-usage-prompt
-;    (my/load-mcp-guidance "emacs/select_region.md"))
-;   (claude-code-ide-extras-emacs-xref-find-definitions-at-point-usage-prompt
-;    (my/load-mcp-guidance "emacs/xref_find_definitions_at_point.md"))
-;   (claude-code-ide-extras-emacs-xref-find-references-at-point-usage-prompt
-;    (my/load-mcp-guidance "emacs/xref_find_references_at_point.md"))
+  ;; Emacs tool customizations
+  (claude-code-ide-extras-emacs-describe-usage-prompt
+   (my/load-mcp-guidance "emacs/describe.md"))
+  (claude-code-ide-extras-emacs-apropos-usage-prompt
+   (my/load-mcp-guidance "emacs/apropos.md"))
+  (claude-code-ide-extras-emacs-apropos-command-usage-prompt
+   (my/load-mcp-guidance "emacs/apropos_command.md"))
+  (claude-code-ide-extras-emacs-apropos-documentation-usage-prompt
+   (my/load-mcp-guidance "emacs/apropos_documentation.md"))
+  (claude-code-ide-extras-emacs-buffer-query-usage-prompt
+   (my/load-mcp-guidance "emacs/buffer_query.md"))
+  (claude-code-ide-extras-emacs-buffer-search-usage-prompt
+   (my/load-mcp-guidance "emacs/buffer_search.md"))
+  (claude-code-ide-extras-emacs-read-dir-locals-usage-prompt
+   (my/load-mcp-guidance "emacs/read_dir_locals.md"))
+  (claude-code-ide-extras-emacs-get-buffer-local-keys-usage-prompt
+   (my/load-mcp-guidance "emacs/get_buffer_local_keys.md"))
+  (claude-code-ide-extras-emacs-get-buffer-local-variables-usage-prompt
+   (my/load-mcp-guidance "emacs/get_buffer_local_variables.md"))
+  (claude-code-ide-extras-emacs-eval-elisp-usage-prompt
+   (my/load-mcp-guidance "emacs/eval_elisp.md"))
+  (claude-code-ide-extras-emacs-eval-region-usage-prompt
+   (my/load-mcp-guidance "emacs/eval_region.md"))
+  (claude-code-ide-extras-emacs-eval-defun-at-point-usage-prompt
+   (my/load-mcp-guidance "emacs/eval_defun_at_point.md"))
+  (claude-code-ide-extras-emacs-find-file-usage-prompt
+   (my/load-mcp-guidance "emacs/find_file.md"))
+  (claude-code-ide-extras-emacs-position-point-usage-prompt
+   (my/load-mcp-guidance "emacs/position_point.md"))
+  (claude-code-ide-extras-emacs-select-region-usage-prompt
+   (my/load-mcp-guidance "emacs/select_region.md"))
+  (claude-code-ide-extras-emacs-xref-find-definitions-at-point-usage-prompt
+   (my/load-mcp-guidance "emacs/xref_find_definitions_at_point.md"))
+  (claude-code-ide-extras-emacs-xref-find-references-at-point-usage-prompt
+   (my/load-mcp-guidance "emacs/xref_find_references_at_point.md"))
 
-;   ;; Meta tool customizations
-;   (claude-code-ide-extras-meta-get-mcp-custom-advice-header
-;    (my/load-mcp-guidance "meta/header.md"))
-;   (claude-code-ide-extras-meta-get-mcp-custom-advice-usage-prompt
-;    (my/load-mcp-guidance "meta/get_mcp_custom_advice.md"))
+  ;; Meta tool customizations
+  (claude-code-ide-extras-meta-get-mcp-custom-advice-header
+   (my/load-mcp-guidance "meta/header.md"))
+  (claude-code-ide-extras-meta-get-mcp-custom-advice-usage-prompt
+   (my/load-mcp-guidance "meta/get_mcp_custom_advice.md"))
 
-;   :config
-;   (claude-code-ide-extras-setup))
+  :config
+  (claude-code-ide-extras-setup))
 
 
 ;;

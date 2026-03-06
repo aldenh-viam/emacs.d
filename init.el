@@ -535,7 +535,7 @@ buffer. When `switch-to-buffer-obey-display-actions' is non-nil,
   :bind
   (("M-g c" . avy-goto-char-timer)
    ("M-g l" . avy-goto-line)
-   ("M-g w" . avy-goto-word-1)
+   ("M-g w" . avy-goto-word-0)
    :map isearch-mode-map
    ("M-s a" . avy-isearch)))
 
@@ -908,6 +908,7 @@ buffer. When `switch-to-buffer-obey-display-actions' is non-nil,
   :init
   (defun meow-setup ()
     (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+    (setq meow-use-clipboard select-enable-clipboard)
     (meow-motion-overwrite-define-key
      '("j" . meow-next)
      '("k" . meow-prev)
